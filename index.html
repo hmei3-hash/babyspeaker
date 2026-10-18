@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="BabySpeaker reads your baby's cues during together time and only taps you on the shoulder when it matters. Built at DubHacks 2026.">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>BabySpeaker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap">
+<style>
+/* Layout: a dusk hero with the planet horizon and the real lock screen, then warm paper sections, a dark vision band, and the interest list.
+   Single committed look (dusk + paper), so colors are explicit rather than theme-switched. */
+:root {
+  color-scheme: light;
+  --night: #1A0E12;
+  --ink: #2A1714;
+  --paper: #FBF4EC;
+  --sand: #F3E6D8;
+  --card: #FFFBF6;
+  --line: #E2CDB9;
+  --muted: #5A4038;
+  --soft: #6E5248;
+  --ember: #F08A45;
+  --ember-text: #9A4318;
+  --glow: #F6B677;
+  --on-dark: #FBEDE1;
+  --on-dark-muted: #E9D3C4;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --body: "DM Sans", "Helvetica Neue", "Segoe UI", sans-serif;
+}
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.6; }
+a { color: var(--ember-text); }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--ember); outline-offset: 3px; }
+.wrap { max-width: 1160px; margin: 0 auto; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); box-sizing: border-box; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+h2 { font-weight: 800; font-size: clamp(34px, 4.4vw, 48px); line-height: 1.02; letter-spacing: -0.03em; }
+h3 { font-weight: 600; font-size: 24px; letter-spacing: -0.02em; line-height: 1.15; }
+p { margin: 0; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ember-text); }
+.lede { font-size: 18px; color: var(--muted); max-width: 62ch; }
+.stack { display: flex; flex-direction: column; gap: 14px; }
+
+/* hero */
+.hero { background: var(--night); color: var(--on-dark); position: relative; overflow: hidden; }
+.planet { position: absolute; left: 50%; transform: translateX(-50%); border-radius: 50%; pointer-events: none; }
+.p1 { width: 1600px; height: 1600px; bottom: -1470px; background: #B9502A; }
+.p2 { width: 1500px; height: 1500px; bottom: -1415px; background: #E07A40; }
+.p3 { width: 1400px; height: 1400px; bottom: -1355px; background: #F4AC6C; }
+.star { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #FFE9D4; opacity: 0.7; }
+nav { position: relative; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; padding-block: 20px; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--on-dark); text-decoration: none; font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: -0.02em; }
+.brand svg { width: 34px; height: 34px; }
+.navlinks { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; font-size: 15px; }
+.navlinks a { color: var(--on-dark-muted); text-decoration: none; }
+.navlinks a:hover { color: #FFFFFF; }
+.pill { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 24px; border-radius: 999px; font-weight: 700; text-decoration: none; font-size: 16px; }
+.navlinks .pill { min-height: 44px; background: var(--on-dark); color: var(--night); }
+.navlinks .pill:hover { color: var(--night); background: #FFFFFF; }
+.herogrid { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 40px; padding-block: 64px 170px; }
+.herotext { flex: 999 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 22px; }
+.herotext .eyebrow { color: var(--glow); }
+h1 { font-weight: 800; font-size: clamp(46px, 7vw, 92px); line-height: 0.96; letter-spacing: -0.04em; color: #FFF6EC; }
+.herotext .lede { color: var(--on-dark-muted); font-size: 19px; max-width: 34em; }
+.ctas { display: flex; flex-wrap: wrap; gap: 12px; padding-top: 4px; }
+.cta-main { background: var(--ember); color: var(--night); }
+.cta-main:hover { background: #F59C5E; color: var(--night); }
+.cta-ghost { border: 1.5px solid rgba(251, 237, 225, 0.45); color: var(--on-dark); font-weight: 500; }
+.cta-ghost:hover { border-color: var(--on-dark); color: #FFFFFF; }
+.phonecol { flex: 1 1 260px; display: flex; justify-content: center; }
+.phone { width: 250px; max-width: 100%; border-radius: 46px; padding: 10px; background: #0B0D10; box-shadow: 0 30px 80px rgba(26, 14, 18, 0.5); animation: rise 0.9s cubic-bezier(.2,.7,.2,1) both; }
+.phone img { display: block; width: 100%; border-radius: 37px; }
+@keyframes rise { from { transform: translateY(24px); } to { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .phone { animation: none; } }
+
+/* problem */
+.problem { display: flex; flex-wrap: wrap; gap: 32px 56px; padding-block: 88px 80px; }
+.problem h2 { flex: 1 1 320px; }
+.problem .stack { flex: 2 1 420px; min-width: 0; color: var(--muted); font-size: 18px; }
+
+/* today */
+.band-sand { background: var(--sand); }
+.band-sand > .wrap { padding-block: 84px; display: flex; flex-direction: column; gap: 44px; }
+.states { display: flex; flex-wrap: wrap; gap: 16px; }
+.state { flex: 1 1 260px; min-width: 0; background: var(--card); border-radius: 22px; padding: 26px; display: flex; flex-direction: column; gap: 12px; }
+.state p { color: var(--muted); font-size: 16px; line-height: 1.55; }
+.state.hot { background: var(--ink); color: var(--on-dark); }
+.state.hot p { color: var(--on-dark-muted); }
+.state.hot strong { color: #FFF6EC; }
+.dot { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.dot svg { width: 22px; height: 22px; }
+.how { display: flex; flex-wrap: wrap; gap: 24px 56px; }
+.how .stack { flex: 1 1 280px; }
+.how .stack p { color: var(--muted); font-size: 16px; }
+.steps { flex: 2 1 480px; min-width: 0; list-style: none; margin: 0; padding: 0; counter-reset: s; }
+.steps li { display: flex; gap: 18px; padding-block: 18px; border-top: 1px solid var(--line); counter-increment: s; }
+.steps li:last-child { border-bottom: 1px solid var(--line); }
+.steps li::before { content: counter(s, decimal-leading-zero); font-family: var(--display); font-weight: 800; font-size: 22px; color: var(--ember-text); width: 34px; flex-shrink: 0; line-height: 1.3; }
+.steps strong { display: block; font-size: 18px; margin-bottom: 2px; }
+.steps span { color: var(--muted); font-size: 16px; line-height: 1.55; }
+.tag { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; padding: 4px 10px; border-radius: 999px; }
+
+/* highlights */
+.hl { display: flex; flex-wrap: wrap; align-items: center; gap: 40px 56px; padding-block: 88px; }
+.hl > .stack { flex: 1 1 360px; }
+.hlcards { flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.hlcard { background: var(--card); border: 1px solid #EAD8C6; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 2px; }
+.hlcard .k { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: var(--ember-text); }
+.hlcard .t { font-size: 19px; font-weight: 700; }
+.hlcard .s { font-size: 14px; color: var(--soft); }
+.note { font-size: 13px; color: var(--soft); padding-left: 4px; }
+
+/* vision */
+.band-ink { background: var(--ink); color: var(--on-dark); }
+.band-ink > .wrap { padding-block: 92px; display: flex; flex-direction: column; gap: 44px; }
+.band-ink h2, .band-ink h3 { color: #FFF6EC; }
+.band-ink .eyebrow { color: var(--glow); }
+.band-ink .lede { color: var(--on-dark-muted); }
+.road { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; }
+.step { border: 1px solid rgba(251, 237, 225, 0.18); border-radius: 22px; padding: 26px; display: flex; flex-direction: column; gap: 10px; }
+.step p { color: var(--on-dark-muted); font-size: 16px; line-height: 1.55; }
+.step .tag { align-self: flex-start; background: rgba(251, 237, 225, 0.14); color: var(--on-dark); }
+.step.next .tag { background: var(--ember); color: var(--night); }
+
+/* join */
+.join { display: flex; flex-wrap: wrap; gap: 40px 56px; align-items: flex-start; padding-block: 100px; }
+.join > .stack { flex: 1 1 360px; }
+.join h2 { font-size: clamp(38px, 5vw, 56px); }
+.joincard { flex: 1 1 400px; min-width: 0; background: var(--card); border: 1px solid #EAD8C6; border-radius: 26px; padding: 30px; display: flex; flex-direction: column; gap: 18px; }
+.joincard ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.joincard li { display: flex; gap: 12px; align-items: flex-start; font-size: 16px; color: var(--muted); }
+.joincard li svg { flex-shrink: 0; width: 20px; height: 20px; margin-top: 3px; }
+.cta-dark { background: var(--ink); color: #FFF6EC; min-height: 56px; font-size: 17px; }
+.cta-dark:hover { background: #3E241E; color: #FFF6EC; }
+.small { font-size: 13px; color: var(--soft); line-height: 1.5; }
+
+footer { border-top: 1px solid var(--line); }
+footer .wrap { padding-block: 28px 40px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; font-size: 14px; color: var(--soft); }
+</style>
+</head>
+<body>
+
+
+<header class="hero" id="top">
+  <div class="planet p1" aria-hidden="true"></div>
+  <div class="planet p2" aria-hidden="true"></div>
+  <div class="planet p3" aria-hidden="true"></div>
+  <span class="star" style="left:12%;top:18%" aria-hidden="true"></span>
+  <span class="star" style="left:31%;top:9%" aria-hidden="true"></span>
+  <span class="star" style="left:58%;top:22%" aria-hidden="true"></span>
+  <span class="star" style="left:83%;top:14%" aria-hidden="true"></span>
+  <span class="star" style="left:71%;top:41%" aria-hidden="true"></span>
+  <span class="star" style="left:6%;top:47%" aria-hidden="true"></span>
+
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="#top">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14.5" fill="#F08A45"/><circle cx="29" cy="35" r="15" fill="#FFF6EC"/><path d="M27 20.5c-.5-3.6 2.4-6 5.2-4.6 1.9 1 1.6 3.6-.4 3.6" fill="none" stroke="#FFF6EC" stroke-width="3" stroke-linecap="round"/><circle cx="24" cy="34" r="2.1" fill="#3A1A1C"/><circle cx="33.5" cy="34" r="2.1" fill="#3A1A1C"/><ellipse cx="28.8" cy="40.6" rx="2.6" ry="2.1" fill="#3A1A1C"/><path d="M47 30c2 2.8 2 7.2 0 10" fill="none" stroke="#FFF6EC" stroke-width="3" stroke-linecap="round"/><path d="M52.5 26.5c3.6 5 3.6 12 0 17" fill="none" stroke="#FFF6EC" stroke-width="3" stroke-linecap="round" opacity="0.75"/></svg>
+        <span>BabySpeaker</span>
+      </a>
+      <div class="navlinks">
+        <a href="#today">What works today</a>
+        <a href="#vision">Vision</a>
+        <a class="pill" href="#join">Join the list</a>
+      </div>
+    </nav>
+
+    <div class="herogrid">
+      <div class="herotext">
+        <span class="eyebrow">Built at DubHacks 2026</span>
+        <h1>Be there<br>without hovering.</h1>
+        <p class="lede">BabySpeaker watches and listens during together time, reads your baby's cues, and only taps you on the shoulder when it matters. In your baby's own voice.</p>
+        <div class="ctas">
+          <a class="pill cta-main" href="#join">Join the interest list</a>
+          <a class="pill cta-ghost" href="https://claude.ai/artifact/GTRYtJAmHS8oJCzBPmYpxU" target="_blank" rel="noopener">Try the live demo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="wrap problem" aria-labelledby="problem-h">
+    <h2 id="problem-h">Babies talk all day. Just not in words.</h2>
+    <div class="stack">
+      <p>A pointed finger, a change in pitch, a face that crumples a second before the cry. The signals are there, and they are easy to miss. Parents end up either watching constantly and wearing out, or looking away and wondering what they missed.</p>
+      <p>BabySpeaker is a third option. Hand the watching to a model, keep your phone locked, and look up when your baby is actually reaching out to you.</p>
+    </div>
+  </section>
+
+  <section class="band-sand" id="today" aria-labelledby="today-h">
+    <div class="wrap">
+      <div class="stack">
+        <span class="eyebrow">What works today</span>
+        <h2 id="today-h">Three states. One glance. No app to babysit.</h2>
+        <p class="lede">During together time, every moment lands in one of three states on your lock screen. You never have to open the app.</p>
+      </div>
+
+      <div class="states">
+        <article class="state">
+          <div class="dot" style="background:#CFE9DE"><svg viewBox="0 0 24 24" fill="none" stroke="#2E6B55" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+          <h3>All calm</h3>
+          <p>Playing, content, asleep. Nothing needs you, so nothing interrupts you.</p>
+        </article>
+        <article class="state hot">
+          <div class="dot" style="background:#F08A45"><svg viewBox="0 0 24 24" fill="none" stroke="#2A1714" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 4.5v9"/><path d="M12 19v.5"/></svg></div>
+          <h3>Needs your attention</h3>
+          <p>Your baby is reaching out: pointing at a plane, calling for you. One notification, in their voice: <strong>"Mom, look!"</strong></p>
+        </article>
+        <article class="state">
+          <div class="dot" style="background:#F6DFA6"><svg viewBox="0 0 24 24" fill="none" stroke="#7A5A10" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M3 12c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/></svg></div>
+          <h3>A bit fussy</h3>
+          <p>Restless, not crying. A quiet heads-up when the evidence is weaker, so you decide.</p>
+        </article>
+      </div>
+
+      <div class="how">
+        <div class="stack">
+          <h3>How it decides</h3>
+          <p>Built on the Perceptron Mk1.5 vision and audio model, with our own fusion layer on top. This part runs today.</p>
+        </div>
+        <ol class="steps">
+          <li><div><strong>Watch and listen in 10-second windows</strong><span>Picture and sound are read separately for cues: pointing, gaze, limb movement, cooing, fussing, crying, background TV.</span></div></li>
+          <li><div><strong>Check whether sound and picture agree</strong><span>Agree, compatible, conflicting, or only one side usable. Disagreement is treated as a signal, not averaged away.</span></div></li>
+          <li><div><strong>Interrupt only on real evidence</strong><span>An alert needs about 20 seconds of agreeing evidence. Each alert shows the clip and the cues behind it, and "can't tell" is an allowed answer.</span></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap hl" aria-labelledby="hl-h">
+    <div class="stack">
+      <span class="eyebrow">Highlights</span>
+      <h2 id="hl-h">The moments you'd never get back.</h2>
+      <p class="lede">The happiest morning of the week. The first time pointing at a plane. BabySpeaker keeps the short clip so a busy day doesn't swallow it.</p>
+    </div>
+    <div class="hlcards">
+      <div class="hlcard"><span class="k">HIGHLIGHT</span><span class="t">Happiest morning this week</span><span class="s">Laughed and smiled for 12 minutes</span></div>
+      <div class="hlcard"><span class="k">HIGHLIGHT · FIRST</span><span class="t">First time pointing at a plane</span><span class="s">Today, 10:42 AM · clip saved</span></div>
+      <span class="note">Example highlights from our demo.</span>
+    </div>
+  </section>
+
+  <section class="band-ink" id="vision" aria-labelledby="vision-h">
+    <div class="wrap">
+      <div class="stack">
+        <span class="eyebrow">Where we're going</span>
+        <h2 id="vision-h">From reading cues to helping every serve get a return.</h2>
+        <p class="lede">Step one was making cue detection accurate. Everything next builds on it.</p>
+      </div>
+      <div class="road">
+        <article class="step next"><span class="tag">NEXT</span><h3>Cues into words</h3><p>Map what we detect, like pointing, looking up and excited babble, to a short line in your baby's voice: "Look! Plane!"</p></article>
+        <article class="step"><span class="tag">LATER</span><h3>Serve-and-return</h3><p>Notice when your baby "serves" with a point, a babble or a reach, and gently nudge you to return it. See those exchanges grow over time.</p></article>
+        <article class="step"><span class="tag">LATER</span><h3>Co-viewing</h3><p>Understand what your baby is looking at in a book or on a shared screen, and suggest something to talk about together.</p></article>
+        <article class="step"><span class="tag">LATER</span><h3>Live on the lock screen</h3><p>A Live Activity and Dynamic Island view, so the current state is one glance away without a single notification.</p></article>
+        <article class="step"><span class="tag">LATER</span><h3>A private highlights reel</h3><p>First times and best days, saved automatically and kept on your phone.</p></article>
+        <article class="step"><span class="tag">ONGOING</span><h3>Measured, not guessed</h3><p>A labeled evaluation set to measure how often each state is right, and to tune how quickly we alert.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap join" id="join" aria-labelledby="join-h">
+    <div class="stack">
+      <span class="eyebrow">Interest list</span>
+      <h2 id="join-h">Want BabySpeaker for your family?</h2>
+      <p class="lede">Join the list to hear when the beta opens, and help shape what it says and when.</p>
+    </div>
+    <div class="joincard">
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#9A4318" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Early access to the iPhone beta</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#9A4318" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>A say in which moments deserve a notification</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#9A4318" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>One email when we launch. No spam.</li>
+      </ul>
+      <a class="pill cta-dark" id="formlink" href="https://docs.google.com/forms/d/e/1FAIpQLSfAhxThDJJKilMrCYCq507G5isV1dwZr-HeA4omX9Kptql6BA/viewform" target="_blank" rel="noopener">Join the interest list</a>
+      <p class="small" id="formnote">Opens our short Google Form in a new tab.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>BabySpeaker · Built at DubHacks 2026 with Perceptron Mk1.5</span>
+    <span>Observations of sound and video. Not a medical device.</span>
+  </div>
+</footer>
+
+</body>
+</html>
